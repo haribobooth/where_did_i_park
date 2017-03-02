@@ -1,6 +1,7 @@
-var MapWrapper = function(coords, zoom, container){
+var MapWrapper = function(zoom, container){
+  this.getUserLocation()
   this.googleMap = new google.maps.Map(container, {
-    center: coords,
+    center: this.coords,
     zoom: zoom,
   });
 };
@@ -11,9 +12,9 @@ MapWrapper.prototype = {
       navigator.geolocation.getCurrentPosition(function(position){
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
-        var coords = new google.maps.LatLng(lat, lng);
-        this.googleMap.setCenter(coords);
-        this.addMarker(coords);
+        this.coords = new google.maps.LatLng(lat, lng);
+        this.googleMap.setCenter(this.coords);
+        this.addMarker(this.coords);
       }.bind(this))
     }
   },
@@ -22,11 +23,10 @@ MapWrapper.prototype = {
     var marker = new google.maps.Marker({
       position: coords,
       map: this.googleMap,
-      icon: "../../public/assets/carIcon.png"
+      icon: "assets/carIcon.png"
     })
   }
 
 }
-
 
 module.exports = MapWrapper;

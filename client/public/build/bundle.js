@@ -63,19 +63,24 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+var MapWrapper = __webpack_require__(1);
 
 var UI = function(){
-
+  this.showGoogleMap();
 };
 
 UI.prototype = {
-
+  showGoogleMap: function(){
+    var mapContainer = document.getElementById('map-container');
+    var mapWrapper = new MapWrapper(8, mapContainer);
+  },
 }
 
 module.exports = UI;
@@ -83,15 +88,53 @@ module.exports = UI;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+var MapWrapper = function(zoom, container){
+  this.getUserLocation()
+  this.googleMap = new google.maps.Map(container, {
+    center: this.coords,
+    zoom: zoom,
+  });
+};
+
+MapWrapper.prototype = {
+  getUserLocation: function(){
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(position){
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        this.coords = new google.maps.LatLng(lat, lng);
+        this.googleMap.setCenter(this.coords);
+        this.addMarker(this.coords);
+      }.bind(this))
+    }
+  },
+
+  addMarker: function(coords){
+    var marker = new google.maps.Marker({
+      position: coords,
+      map: this.googleMap,
+      icon: "assets/carIcon.png"
+    })
+  }
+
+}
+
+module.exports = MapWrapper;
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var UI = __webpack_require__(0);
 
-var App = function(){
-  new UI();
-}
+var app = function(){
+  var ui = new UI();
+};
 
-window.onload = App;
+window.onload = app;
 
 
 /***/ })
