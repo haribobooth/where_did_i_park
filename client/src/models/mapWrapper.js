@@ -1,13 +1,13 @@
-var MapWrapper = function(zoom, container){
-  this.getUserLocation()
+var MapWrapper = function(coords, zoom, container){
   this.googleMap = new google.maps.Map(container, {
-    center: this.coords,
+    center: coords,
     zoom: zoom,
   });
 };
 
 MapWrapper.prototype = {
   getUserLocation: function(){
+    console.log("getting user location");
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(function(position){
         var lat = position.coords.latitude;
@@ -16,7 +16,13 @@ MapWrapper.prototype = {
         this.googleMap.setCenter(this.coords);
         this.addMarker(this.coords);
       }.bind(this))
+      return this.coords;
     }
+  },
+
+  moveToLocation: function(coords){
+    this.googleMap.setCenter(coords);
+    this.addMarker(coords);
   },
 
   addMarker: function(coords){

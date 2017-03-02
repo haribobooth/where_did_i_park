@@ -1,5 +1,19 @@
+#main-wrapper {
+  height: 500px;
+  align-items: center
+}
+
 .button-container {
   display: inline-block;
+  height: 500px;
+  border-radius: 2px;
+  vertical-align: top;
+  width: 100px;
+  text-align: center;
+}
+
+.button-container p {
+  margin-top: 238px;
 }
 
 #map-container {

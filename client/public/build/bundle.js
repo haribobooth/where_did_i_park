@@ -71,16 +71,44 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 var MapWrapper = __webpack_require__(1);
+var ParkingPlaceManager = __webpack_require__(3);
 
 var UI = function(){
   this.showGoogleMap();
+  this.setupButtonOnPresses();
+
+  //add while loop to check if geolocation = null or something
 };
 
 UI.prototype = {
   showGoogleMap: function(){
     var mapContainer = document.getElementById('map-container');
-    var mapWrapper = new MapWrapper(8, mapContainer);
+    var initialCoords = {lat:55.9468744, lng:-3.201654500000018}
+    this.mapWrapper = new MapWrapper(initialCoords, 13, mapContainer);
   },
+
+  setupButtonOnPresses: function(){
+    var whereDidIParkButton = document.getElementById('where-did-i-park-container');
+    whereDidIParkButton.onclick = this.moveMapToSavedLocation.bind(this);
+
+    var parkMyCarButton = document.getElementById('park-my-car-container');
+    parkMyCarButton.onclick = this.saveLocation.bind(this);
+  },
+
+  moveMapToSavedLocation: function(){
+    var savedCoords = ParkingPlaceManager.loadParkingPlace();
+    if(savedCoords == null){
+      return
+    } else {
+      this.mapWrapper.moveToLocation(savedCoords);
+    }
+  },
+
+  saveLocation: function(){
+    var coords = this.mapWrapper.getUserLocation();
+    ParkingPlaceManager.saveParkingPlace(coords);
+  }
+
 }
 
 module.exports = UI;
@@ -90,16 +118,16 @@ module.exports = UI;
 /* 1 */
 /***/ (function(module, exports) {
 
-var MapWrapper = function(zoom, container){
-  this.getUserLocation()
+var MapWrapper = function(coords, zoom, container){
   this.googleMap = new google.maps.Map(container, {
-    center: this.coords,
+    center: coords,
     zoom: zoom,
   });
 };
 
 MapWrapper.prototype = {
   getUserLocation: function(){
+    console.log("getting user location");
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(function(position){
         var lat = position.coords.latitude;
@@ -108,7 +136,13 @@ MapWrapper.prototype = {
         this.googleMap.setCenter(this.coords);
         this.addMarker(this.coords);
       }.bind(this))
+      return this.coords;
     }
+  },
+
+  moveToLocation: function(coords){
+    this.googleMap.setCenter(coords);
+    this.addMarker(coords);
   },
 
   addMarker: function(coords){
@@ -135,6 +169,30 @@ var app = function(){
 };
 
 window.onload = app;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+var ParkingPlaceManager = function(){
+
+};
+
+ParkingPlaceManager.prototype = {
+  saveParkingPlace: function(parkingPlace){
+    var jsonParkingPlace = JSON.stringify(parkingPlace);
+    localStorage.setItem("parkingPlace", jsonParkingPlace);
+  },
+
+  loadParkingPlace: function(){
+    var jsonParkingPlace = localStorage.getItem("parkingPlace");
+    if(jsonParkingPlace == null || jsonParkingPlace == undefined) return null;
+    return JSON.parse(jsonParkingPlace);
+  }
+}
+
+module.exports = new ParkingPlaceManager();
 
 
 /***/ })
