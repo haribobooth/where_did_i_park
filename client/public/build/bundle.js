@@ -127,7 +127,7 @@ UI.prototype = {
       mainWrapper.appendChild(parkMyCarButton);
       mainWrapper.appendChild(whereDidIParkButton);
 
-      this.zoom = 17;
+      this.zoom = 18;
     } else {
       this.zoom = 13;
     }
