@@ -1,0 +1,31 @@
+#main-wrapper {
+
+}
+
+.active {
+  background-color: #8888aa;
+}
+
+.active:hover {
+  background-color: #9999bb;
+}
+
+.active:active {
+  background-color: #777799;
+
+}
+
+.button-container p {
+  font-family: sans-serif;
+}
+
+.disabled {
+  background-color: grey;
+}
+
+#disabled-button:hover {
+  background-color: grey;
+}
+
+#map-container {
+}
