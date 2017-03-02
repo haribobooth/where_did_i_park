@@ -2,17 +2,16 @@ var MapWrapper = require("../models/mapWrapper");
 var ParkingPlaceManager = require("../models/parkingPlaceManager");
 
 var UI = function(){
+  this.mediaQuery();
   this.showGoogleMap();
   this.setupButtonOnPresses();
-
-  //add while loop to check if geolocation = null or something
 };
 
 UI.prototype = {
   showGoogleMap: function(){
     var mapContainer = document.getElementById('map-container');
     var initialCoords = {lat:55.9468744, lng:-3.201654500000018}
-    this.mapWrapper = new MapWrapper(initialCoords, 13, mapContainer);
+    this.mapWrapper = new MapWrapper(initialCoords, this.zoom, mapContainer);
   },
 
   setupButtonOnPresses: function(){
@@ -33,8 +32,28 @@ UI.prototype = {
   },
 
   saveLocation: function(){
-    var coords = this.mapWrapper.getUserLocation();
-    ParkingPlaceManager.saveParkingPlace(coords);
+    this.mapWrapper.getUserLocation(function(coords){
+      ParkingPlaceManager.saveParkingPlace(coords);
+    });
+  },
+
+  mediaQuery: function(){
+    var screenSmall = window.matchMedia( "(max-device-width: 700px)" );
+    if(screenSmall.matches){
+      var parkMyCarButton = document.getElementById('park-my-car-container');
+      var whereDidIParkButton = document.getElementById('where-did-i-park-container');
+      var mainWrapper = document.getElementById('main-wrapper');
+
+      mainWrapper.removeChild(parkMyCarButton);
+      mainWrapper.removeChild(whereDidIParkButton);
+
+      mainWrapper.appendChild(parkMyCarButton);
+      mainWrapper.appendChild(whereDidIParkButton);
+
+      this.zoom = 17;
+    } else {
+      this.zoom = 13;
+    }
   }
 
 }

@@ -6,7 +6,7 @@ var MapWrapper = function(coords, zoom, container){
 };
 
 MapWrapper.prototype = {
-  getUserLocation: function(){
+  getUserLocation: function(callback){
     console.log("getting user location");
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(function(position){
@@ -15,8 +15,8 @@ MapWrapper.prototype = {
         this.coords = new google.maps.LatLng(lat, lng);
         this.googleMap.setCenter(this.coords);
         this.addMarker(this.coords);
+        callback(this.coords);
       }.bind(this))
-      return this.coords;
     }
   },
 
