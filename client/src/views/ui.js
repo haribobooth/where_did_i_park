@@ -32,8 +32,13 @@ UI.prototype = {
   },
 
   saveLocation: function(){
+    var parkMyCarButtonText = document.querySelector('#park-my-car-container p');
+    parkMyCarButtonText.innerText = "Saving location...";
+
     this.mapWrapper.getUserLocation(function(coords){
       ParkingPlaceManager.saveParkingPlace(coords);
+      var parkMyCarButtonText = document.querySelector('#park-my-car-container p');
+      parkMyCarButtonText.innerText = "Park my car!";
     });
   },
 
