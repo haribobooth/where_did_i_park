@@ -1,4 +1,4 @@
-# JavaScript Where Did I Park?
+# JavaScript Where Did I Park? (WIP)
 ## Simple web app used to park your car and retrieve the map location of the car
 ### Used to experiment with responsivity and JavaScript
 
